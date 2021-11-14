@@ -5,7 +5,6 @@
 import discord, random, sys, time, os #import all of the libraries needed
 from discord.ext import commands #imports the commands from the Discord ext
 import sqlite3
-
 #__________________________________________________________________________________________________________________________________
 #Bot Setup Stuff:
 
@@ -15,17 +14,20 @@ print('Starting Bot...')
 TOKEN = open("token.txt","r").readline()
 
 #Command Prefix
-client = commands.Bot(command_prefix = '!')    #sets the prefix for entering commands as a '!'
+intents = discord.Intents.all()
+client = commands.Bot(command_prefix = '!', intents = intents)    #sets the prefix for entering commands as a '!'
 
 #Delete the default Help command before replacing with a new one
 client.remove_command('help')
 
-
+global connection
 #setup the item database - create it if it doesn't exist and setup the table, or connect to it if it does exist
-connection = sqlite3.connect("RPBot.db")
+
 if os.path.isfile('RPBot.db'):
+     connection = sqlite3.connect("RPBot.db")
      print('RPBot.db already exists')
 else:
+     connection = sqlite3.connect("RPBot.db")
      cursor = connection.cursor()
      cursor.execute("CREATE TABLE items (item, quantity, cost, owner)")
      cursor.execute("CREATE Table character (name, age, height, weight, race, class, health, mana, str, dex, will, int, char, con, user, url)")
@@ -53,7 +55,8 @@ client.load_extension("Commands.Magic8Commands")
 client.load_extension("Commands.CharacterCommands")
 client.load_extension("Commands.InventoryCommands")
 
-#_________________________________________________________________________________________________________________________________________
+#_______________________________________________________________________________________________________________________________________
+# This listens for activity in specified channels and gives "money" to their wallet
 @client.event
 async def on_message(message):
     participant = str(message.author.name)
@@ -89,12 +92,15 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-#Error Checking or Messages:
-
 #If there is an error, answers with an error message
 @client.event
 async def on_command_error(ctx,error):
      await ctx.send(f'Error. Try using !help for valid commands. ({error})')
+
+# Send a welcome message when users join the server.
+@client.event
+async def on_member_join(member):
+    await member.send('Welcome!  My name is RPBot.  Use the !help command to see what I can help with!')
 
 #answers with the ms latency
 @client.command()
