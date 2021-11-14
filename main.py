@@ -15,7 +15,7 @@ TOKEN = open("token.txt","r").readline()
 
 #Command Prefix
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix = '!', intents = intents)    #sets the prefix for entering commands as a '!'
+client = commands.Bot(command_prefix = {'!','/'}, intents = intents)    #sets the prefix for entering commands as a '!'
 
 #Delete the default Help command before replacing with a new one
 client.remove_command('help')
