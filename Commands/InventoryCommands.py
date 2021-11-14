@@ -5,29 +5,41 @@ connection = sqlite3.connect("RPBot.db")
 
 #Open your inventory or someone elses
 @commands.command(pass_context = True)
-async def inventory(ctx, user = None):
+async def inventory(ctx, type = 'u', user = None):
      hasPermiss = True
-     if user == None:
-          username = ctx.author.name
-     else:
-         if ctx.message.author.guild_permissions.administrator:
-             person = user
-             username = person
-         else:
-             await ctx.send("Keep your eyes to yourself, snoop!")
-             hasPermiss = False
-     if hasPermiss == True:
-         c = connection.cursor()
-         cursor = connection.cursor()
-         rows = cursor.execute("SELECT item, quantity, cost FROM items WHERE owner = ? ORDER BY item ASC;",(str(username),),).fetchall()
-         embed = discord.Embed(colour = discord.Colour.purple())
-         file = discord.File("Commands/Assets/backpack.png", filename="backpack.png")
-         embed.set_thumbnail(url="attachment://backpack.png")
-         for a, b, c in rows:
-              embed.set_author(name='INVENTORY: {}'.format(username))
-              embed.add_field(name='{}'.format(a), value = 'Qty: {}  Value: {}'.format(b,c), inline = False)
-         await ctx.send(file=file,embed=embed)
-
+     if type == 'u':
+          if user == None:
+               username = ctx.author.name
+          else:
+              if ctx.message.author.guild_permissions.administrator:
+                  person = user
+                  username = person
+              else:
+                  await ctx.send("Keep your eyes to yourself, snoop!")
+                  hasPermiss = False
+          if hasPermiss == True:
+              c = connection.cursor()
+              cursor = connection.cursor()
+              rows = cursor.execute("SELECT item, quantity, cost FROM items WHERE owner = ? ORDER BY item ASC;",(str(username),),).fetchall()
+              embed = discord.Embed(colour = discord.Colour.purple())
+              file = discord.File("Commands/Assets/backpack.png", filename="backpack.png")
+              embed.set_thumbnail(url="attachment://backpack.png")
+              for a, b, c in rows:
+                   embed.set_author(name='INVENTORY: {}'.format(username))
+                   embed.add_field(name='{}'.format(a), value = 'Qty: {}  Value: {}'.format(b,c), inline = False)
+              await ctx.send(file=file,embed=embed)
+     if type = 'c':
+           if hasPermiss == True:
+              c = connection.cursor()
+              cursor = connection.cursor()
+              rows = cursor.execute("SELECT item, quantity, cost FROM items AS I INNER JOIN character AS C WHERE I.owner = C.user AND I.owner =  ? ORDER BY item ASC;",(str(username),),).fetchall()
+              embed = discord.Embed(colour = discord.Colour.purple())
+              file = discord.File("Commands/Assets/backpack.png", filename="backpack.png")
+              embed.set_thumbnail(url="attachment://backpack.png")
+              for a, b, c in rows:
+                   embed.set_author(name='INVENTORY: {}'.format(username))
+                   embed.add_field(name='{}'.format(a), value = 'Qty: {}  Value: {}'.format(b,c), inline = False)
+              await ctx.send(file=file,embed=embed)
 
 #Use an item from your inventory
 @commands.command()
