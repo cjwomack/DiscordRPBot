@@ -32,7 +32,7 @@ The primary functions include:
 
   All commands use the ! prefix by default.  Arguments are shown with brackets [].  Do not include the bracket in your commands.
 
-  Note:  You can issue commands to RPBot via DM if you don't wish users to see a command, or want to keep the main chat
+  Note:  You can issue commands to RPBot via DM if you don't wish users to see a command, or want to keep the main chat clean.
 
 
 ## **Help Commands:**
